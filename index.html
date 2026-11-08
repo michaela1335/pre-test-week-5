@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NZ Curriculum Mathematics Diagnostic Assessment</title>
+  <style>
+    :root {
+      --primary: #1E3A8A;
+      --secondary: #0284C7;
+      --accent: #16A34A;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --text: #1E293B;
+      --border: #CBD5E1;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 820px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      padding: 30px;
+      box-sizing: border-box;
+    }
+    .header {
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header h2 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.35rem;
+    }
+    .badge {
+      background: var(--secondary);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    input[type="text"], select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    .question-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+    .diagram-container {
+      text-align: center;
+      margin: 15px 0;
+      background: #F1F5F9;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .option-btn {
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+    }
+    .option-btn:hover {
+      border-color: var(--secondary);
+      background: #F0F9FF;
+    }
+    .option-btn.selected {
+      border-color: var(--primary);
+      background: #E0F2FE;
+      font-weight: bold;
+    }
+    .solution-box {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #F0FDF4;
+      border-left: 4px solid var(--accent);
+      border-radius: 4px;
+      display: none;
+    }
+    .solution-box h4 {
+      margin: 0 0 5px 0;
+      color: #15803D;
+    }
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+    button.btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.btn:disabled {
+      background: #94A3B8;
+      cursor: not-allowed;
+    }
+    .progress-bar {
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--secondary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .report-card {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .report-card h3 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+    .phase-result {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--accent);
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- STUDENT REGISTRATION PAGE -->
+  <div id="registration-page" class="page active">
+    <div class="header">
+      <h2>NZ Curriculum Mathematics Diagnostic</h2>
+      <span class="badge">40 Questions</span>
+    </div>
+    <p>Please enter your full name and select your year group to begin the assessment.</p>
+    <div class="form-group">
+      <label for="student-name">Student Full Name:</label>
+      <input type="text" id="student-name" placeholder="Type your full name..." required>
+    </div>
+    <div class="form-group">
+      <label for="student-year">Year Group:</label>
+      <select id="student-year" required>
+        <option value="">-- Select Year Group --</option>
+        <option value="Year 7">Year 7</option>
+        <option value="Year 8">Year 8</option>
+      </select>
+    </div>
+    <button class="btn" onclick="startTest()">Begin Diagnostic Test</button>
+  </div>
+
+  <!-- SINGLE-QUESTION PAGE VIEW -->
+  <div id="test-page" class="page">
+    <div class="header">
+      <h2 id="question-header">Question 1 of 40</h2>
+      <span class="badge" id="phase-tag">Phase 2</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="question-title" id="question-text"></div>
+    <div class="diagram-container" id="diagram-area"></div>
+    
+    <div class="options-grid" id="options-area"></div>
+
+    <div class="solution-box" id="solution-box">
+      <h4>Strategy & Thinking Guide:</h4>
+      <p id="solution-text"></p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn" id="toggle-solution-btn" onclick="toggleSolution()" style="background:#0284C7;">Show Strategy</button>
+      <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Next Question</button>
+    </div>
+  </div>
+
+  <!-- DIAGNOSTIC RESULTS & ANALYSIS PAGE -->
+  <div id="results-page" class="page">
+    <div class="header">
+      <h2>NZ Curriculum Mathematics Diagnostic Analysis</h2>
+    </div>
+    <div class="report-card">
+      <h3 id="result-student-name">Student: </h3>
+      <p id="result-year-group">Year Group: </p>
+      <hr>
+      <div>Total Mathematics Score: <strong id="result-score">0 / 40</strong> (<span id="result-percent">0%</span>)</div>
+      <div class="phase-result" id="result-phase-level">Phase Evaluation</div>
+      <p id="result-summary-text"></p>
+    </div>
+
+    <h3>Phase Breakdown</h3>
+    <ul>
+      <li><strong>Phase 2 (7 questions):</strong> <span id="score-p2">0/7</span></li>
+      <li><strong>Phase 3 (23 questions):</strong> <span id="score-p3">0/23</span></li>
+      <li><strong>Phase 4 (5 questions):</strong> <span id="score-p4">0/5</span></li>
+      <li><strong>Phase 5 (5 questions):</strong> <span id="score-p5">0/5</span></li>
+    </ul>
+
+    <p id="submission-status" style="font-weight:bold; color:var(--primary);"></p>
+
+    <button class="btn" onclick="location.reload()">Restart Diagnostic</button>
+  </div>
+</div>
+
+<script>
+  // DEPLOYED GOOGLE APPS SCRIPT BACKEND WEB APP URL
+  const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw8Lrq93smOtJ-QSktMs4fFQeGjZ9blntcjX8St3MZr8e_kFMme00HtUM693-rjJPOA/exec";
+
+  let currentQuestionIndex = 0;
+  let studentAnswers = {};
+  let studentInfo = { name: "", year: "" };
+
+  const questions = [
+    // PHASE 2 (7 Mathematics Questions: Q1 - Q7)
+    {
+      id: 1,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "Look at the Base 10 blocks below. What total number is represented?",
+      diagram: `<svg width="240" height="80" viewBox="0 0 240 80">
+        <rect x="10" y="10" width="60" height="60" fill="#3B82F6" stroke="#1E3A8A" stroke-width="2"/>
+        <text x="40" y="45" font-size="14" fill="#FFF" text-anchor="middle">100</text>
+        <rect x="85" y="10" width="12" height="60" fill="#60A5FA" stroke="#1E3A8A"/>
+        <rect x="102" y="10" width="12" height="60" fill="#60A5FA" stroke="#1E3A8A"/>
+        <rect x="119" y="10" width="12" height="60" fill="#60A5FA" stroke="#1E3A8A"/>
+        <rect x="136" y="10" width="12" height="60" fill="#60A5FA" stroke="#1E3A8A"/>
+        <rect x="160" y="45" width="12" height="12" fill="#F59E0B" stroke="#B45309"/>
+        <rect x="175" y="45" width="12" height="12" fill="#F59E0B" stroke="#B45309"/>
+        <rect x="190" y="45" width="12" height="12" fill="#F59E0B" stroke="#B45309"/>
+        <rect x="205" y="45" width="12" height="12" fill="#F59E0B" stroke="#B45309"/>
+        <rect x="220" y="45" width="12" height="12" fill="#F59E0B" stroke="#B45309"/>
+      </svg>`,
+      options: ["135", "245", "145", "154"],
+      correct: 2, // 145 (Option C)
+      strategy: "Strategy: Combine place value block totals. Add the hundreds block (100), count the tens rods (4 × 10 = 40), and count the unit cubes (5 × 1 = 5)."
+    },
+    {
+      id: 2,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "What fraction of the circle below is shaded grey?",
+      diagram: `<svg width="100" height="100" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="40" fill="#E2E8F0" stroke="#1E293B" stroke-width="2"/>
+        <path d="M50,50 L50,10 A40,40 0 0,1 90,50 Z" fill="#64748B"/>
+        <path d="M50,50 L90,50 A40,40 0 0,1 50,90 Z" fill="#64748B"/>
+      </svg>`,
+      options: ["2/4", "1/4", "3/4", "4/4"],
+      correct: 0, // 2/4 (Option A)
+      strategy: "Strategy: Count the total number of equal parts dividing the shape to find the denominator, then count the shaded sectors to find the numerator."
+    },
+    {
+      id: 3,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "A kiwi bird ate 34 berries in the morning and 29 berries in the afternoon. How many berries did it eat in total?",
+      diagram: "",
+      options: ["53 berries", "65 berries", "55 berries", "63 berries"],
+      correct: 3, // 63 (Option D)
+      strategy: "Strategy: Use addition strategy by rounding 29 to 30: calculate (34 + 30) = 64, then subtract 1 to adjust."
+    },
+    {
+      id: 4,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "Which multiplication equation matches the array of stars shown below?",
+      diagram: `<svg width="150" height="70" viewBox="0 0 150 70">
+        <text x="15" y="25" font-size="20">⭐</text><text x="50" y="25" font-size="20">⭐</text><text x="85" y="25" font-size="20">⭐</text><text x="120" y="25" font-size="20">⭐</text>
+        <text x="15" y="55" font-size="20">⭐</text><text x="50" y="55" font-size="20">⭐</text><text x="85" y="55" font-size="20">⭐</text><text x="120" y="55" font-size="20">⭐</text>
+      </svg>`,
+      options: ["2 × 3 = 6", "2 × 4 = 8", "4 + 4 = 8", "3 × 4 = 12"],
+      correct: 1, // 2 x 4 = 8 (Option B)
+      strategy: "Strategy: Count the number of horizontal rows, then count the columns. Multiply rows × columns to find total items."
+    },
+    {
+      id: 5,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "How many lines of symmetry does a standard non-square rectangle have?",
+      diagram: `<svg width="120" height="70" viewBox="0 0 120 70">
+        <rect x="10" y="10" width="100" height="50" fill="none" stroke="#0F766E" stroke-width="3"/>
+      </svg>`,
+      options: ["2", "4", "1", "0"],
+      correct: 0, // 2 (Option A)
+      strategy: "Strategy: Imagine folding the shape along a line. Count only the fold lines where both halves land perfectly on top of each other."
+    },
+    {
+      id: 6,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "What time is shown on the clock face below?",
+      diagram: `<svg width="100" height="100" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#FFF" stroke="#1E293B" stroke-width="3"/>
+        <line x1="50" y1="50" x2="50" y2="80" stroke="#DC2626" stroke-width="3"/>
+        <line x1="50" y1="50" x2="25" y2="50" stroke="#1E293B" stroke-width="4"/>
+      </svg>`,
+      options: ["9:30", "6:45", "4:30", "8:30"],
+      correct: 2, // 4:30 (Option C)
+      strategy: "Strategy: Look at the shorter hour hand pointing between 4 and 5, then look at the minute hand pointing straight down to 6 (which represents 30 minutes)."
+    },
+    {
+      id: 7,
+      phase: 2,
+      phaseLabel: "Phase 2 (Years 3-4)",
+      text: "What is the missing number in this skip-counting sequence: 5, 10, 15, __, 25?",
+      diagram: "",
+      options: ["18", "20", "22", "16"],
+      correct: 1, // 20 (Option B)
+      strategy: "Strategy: Determine the step increase between consecutive numbers (+5 each time) and apply it to 15."
+    },
+
+    // PHASE 3 (23 Mathematics Questions: Q8 - Q30)
+    {
+      id: 8,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Convert the fraction 1/2 into a decimal.",
+      diagram: "",
+      options: ["0.2", "0.25", "0.12", "0.5"],
+      correct: 3, // 0.5 (Option D)
+      strategy: "Strategy: Divide the numerator by denominator (1 ÷ 2) or convert to an equivalent fraction out of 10."
+    },
+    {
+      id: 9,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What is 50% of 80?",
+      diagram: "",
+      options: ["40", "50", "20", "30"],
+      correct: 0, // 40 (Option A)
+      strategy: "Strategy: Remember that 50% represents one half of the total quantity. Divide 80 by 2."
+    },
+    {
+      id: 10,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Calculate the area of a rectangle with length 6 cm and width 7 cm.",
+      diagram: `<svg width="120" height="80" viewBox="0 0 120 80">
+        <rect x="10" y="10" width="100" height="60" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+        <text x="60" y="45" text-anchor="middle" font-size="12">6 cm × 7 cm</text>
+      </svg>`,
+      options: ["13 cm²", "26 cm²", "42 cm²", "49 cm²"],
+      correct: 2, // 42 cm² (Option C)
+      strategy: "Strategy: Apply the area formula for rectangular shapes: Area = length × width."
+    },
+    {
+      id: 11,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Find the perimeter of a triangle with side lengths measuring 5 cm, 7 cm, and 9 cm.",
+      diagram: "",
+      options: ["35 cm", "21 cm", "22 cm", "18 cm"],
+      correct: 1, // 21 cm (Option B)
+      strategy: "Strategy: Perimeter is the total length of the boundary line around a 2D shape. Add all side lengths together."
+    },
+    {
+      id: 12,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Angles on a straight line add up to 180°. Find missing angle x if the given angle is 120°.",
+      diagram: `<svg width="140" height="70" viewBox="0 0 140 70">
+        <line x1="10" y1="60" x2="130" y2="60" stroke="#1E293B" stroke-width="3"/>
+        <line x1="70" y1="60" x2="110" y2="10" stroke="#DC2626" stroke-width="3"/>
+        <text x="40" y="50" font-size="12">120°</text>
+        <text x="85" y="50" font-size="12">x</text>
+      </svg>`,
+      options: ["50°", "80°", "70°", "60°"],
+      correct: 3, // 60° (Option D)
+      strategy: "Strategy: Subtract the known angle from the total sum of angles on a straight line (180° - 120°)."
+    },
+    {
+      id: 13,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Calculate: 3/8 + 2/8",
+      diagram: "",
+      options: ["5/8", "5/16", "1/8", "6/8"],
+      correct: 0, // 5/8 (Option A)
+      strategy: "Strategy: When adding fractions with matching denominators, add the numerators together while keeping the denominator unchanged."
+    },
+    {
+      id: 14,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "How many flat faces does a 3D triangular prism have?",
+      diagram: "",
+      options: ["4", "5", "6", "3"],
+      correct: 1, // 5 (Option B)
+      strategy: "Strategy: Count the 2 triangular end faces plus the 3 rectangular side faces connecting them."
+    },
+    {
+      id: 15,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What is the mean (average) of these three numbers: 10, 12, and 14?",
+      diagram: "",
+      options: ["10", "14", "12", "36"],
+      correct: 2, // 12 (Option C)
+      strategy: "Strategy: Calculate the sum of all values, then divide that total by the quantity of numbers (sum ÷ 3)."
+    },
+    {
+      id: 16,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Using order of operations (BEDMAS), calculate: 5 + 2 × 6",
+      diagram: "",
+      options: ["42", "30", "22", "17"],
+      correct: 3, // 17 (Option D)
+      strategy: "Strategy: Multiply before adding according to BEDMAS (evaluate 2 × 6 = 12 first, then add 5)."
+    },
+    {
+      id: 17,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Which coordinate point represents moving 2 units right and 5 units up on a grid?",
+      diagram: "",
+      options: ["(2, 5)", "(5, 2)", "(2, 2)", "(5, 5)"],
+      correct: 0, // (2, 5) (Option A)
+      strategy: "Strategy: Coordinates use format (x, y) where x is horizontal distance across and y is vertical distance up."
+    },
+    {
+      id: 18,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "If a fair coin is flipped, what is the theoretical probability of landing on Heads?",
+      diagram: "",
+      options: ["1/4", "1/2", "2/1", "0"],
+      correct: 1, // 1/2 (Option B)
+      strategy: "Strategy: Theoretical probability = (favourable outcomes) ÷ (total possible outcomes) = 1 ÷ 2."
+    },
+    {
+      id: 19,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Calculate: 12.4 + 3.15",
+      diagram: "",
+      options: ["15.45", "15.9", "15.55", "16.55"],
+      correct: 2, // 15.55 (Option C)
+      strategy: "Strategy: Align decimal places vertically (12.40 + 3.15) before adding each place value column."
+    },
+    {
+      id: 20,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "A cyclist travels at a constant speed of 50 km/h for 3 hours. How far do they travel?",
+      diagram: "",
+      options: ["100 km", "120 km", "160 km", "150 km"],
+      correct: 3, // 150 km (Option D)
+      strategy: "Strategy: Distance = Speed × Time. Multiply 50 km/h by 3 hours."
+    },
+    {
+      id: 21,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Calculate: 0.4 × 5",
+      diagram: "",
+      options: ["2.0", "0.2", "20", "0.02"],
+      correct: 0, // 2.0 (Option A)
+      strategy: "Strategy: Multiply whole numbers (4 × 5 = 20), then adjust for the decimal place."
+    },
+    {
+      id: 22,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What is the volume of a rectangular prism measuring 3 cm long, 4 cm wide, and 2 cm high?",
+      diagram: "",
+      options: ["18 cm³", "24 cm³", "14 cm³", "36 cm³"],
+      correct: 1, // 24 cm³ (Option B)
+      strategy: "Strategy: Use the 3D volume formula for rectangular prisms: Volume = length × width × height."
+    },
+    {
+      id: 23,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Which fraction is equivalent to 2/3?",
+      diagram: "",
+      options: ["3/4", "5/6", "4/6", "6/12"],
+      correct: 2, // 4/6 (Option C)
+      strategy: "Strategy: Multiply both the numerator and denominator by the same number (e.g. 2/3 × 2/2 = 4/6)."
+    },
+    {
+      id: 24,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What do the three interior angles inside any triangle always add up to?",
+      diagram: "",
+      options: ["90°", "360°", "270°", "180°"],
+      correct: 3, // 180° (Option D)
+      strategy: "Strategy: Recall the fundamental geometric rule that internal angles of any triangle sum to a straight angle (180°)."
+    },
+    {
+      id: 25,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "Calculate: 10.0 - 3.7",
+      diagram: "",
+      options: ["6.3", "7.3", "6.7", "7.7"],
+      correct: 0, // 6.3 (Option A)
+      strategy: "Strategy: Subtract in steps: 10.0 - 3.0 = 7.0, then subtract 0.7 from 7.0."
+    },
+    {
+      id: 26,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "In the number 4,582, what is the value of the digit 5?",
+      diagram: "",
+      options: ["50", "500", "5000", "5"],
+      correct: 1, // 500 (Option B)
+      strategy: "Strategy: Identify place value columns from right to left: Ones (2), Tens (8), Hundreds (5), Thousands (4)."
+    },
+    {
+      id: 27,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "A teacher shares 48 pencils equally among 6 students. How many pencils does each student receive?",
+      diagram: "",
+      options: ["6", "7", "8", "9"],
+      correct: 2, // 8 (Option C)
+      strategy: "Strategy: Divide the total pencils by the number of equal groups: 48 ÷ 6."
+    },
+    {
+      id: 28,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What is 1/3 of 27?",
+      diagram: "",
+      options: ["3", "7", "6", "9"],
+      correct: 3, // 9 (Option D)
+      strategy: "Strategy: Finding one third of a number means dividing that number into 3 equal parts (27 ÷ 3)."
+    },
+    {
+      id: 29,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "How many metres are in 3.5 kilometres?",
+      diagram: "",
+      options: ["3,500 m", "350 m", "35,000 m", "35 m"],
+      correct: 0, // 3500 m (Option A)
+      strategy: "Strategy: 1 kilometre = 1,000 metres. Multiply 3.5 × 1,000."
+    },
+    {
+      id: 30,
+      phase: 3,
+      phaseLabel: "Phase 3 (Years 5-6)",
+      text: "What is 20% of 150?",
+      diagram: "",
+      options: ["15", "30", "20", "45"],
+      correct: 1, // 30 (Option B)
+      strategy: "Strategy: Find 10% first (150 ÷ 10 = 15), then double it for 20% (15 × 2 = 30)."
+    },
+
+    // PHASE 4 (5 Mathematics Questions: Q31 - Q35)
+    {
+      id: 31,
+      phase: 4,
+      phaseLabel: "Phase 4 (Years 7-8)",
+      text: "Simplify the algebraic expression: 5a + 2b - a + 4b",
+      diagram: "",
+      options: ["6a + 6b", "4a + 2b", "4a + 6b", "10ab"],
+      correct: 2, // 4a + 6b (Option C)
+      strategy: "Strategy: Combine like algebraic terms: group 'a' terms (5a - 1a) together and 'b' terms (2b + 4b) together."
+    },
+    {
+      id: 32,
+      phase: 4,
+      phaseLabel: "Phase 4 (Years 7-8)",
+      text: "Divide $60 between two people in the ratio 1 : 2.",
+      diagram: "",
+      options: ["$30 and $30", "$15 and $45", "$10 and $50", "$20 and $40"],
+      correct: 3, // $20 and $40 (Option D)
+      strategy: "Strategy: Add ratio parts (1 + 2 = 3 total parts). Determine value of 1 part ($60 ÷ 3 = $20), then multiply for 2 parts."
+    },
+    {
+      id: 33,
+      phase: 4,
+      phaseLabel: "Phase 4 (Years 7-8)",
+      text: "Which linear rule connects x and y in this table? (x=1 -> y=4; x=2 -> y=7; x=3 -> y=10)",
+      diagram: "",
+      options: ["y = 3x + 1", "y = 4x", "y = 2x + 2", "y = x + 3"],
+      correct: 0, // y = 3x + 1 (Option A)
+      strategy: "Strategy: Find rate of change in y (+3 for each step in x). Test y = 3x + c with x=1 to find constant c."
+    },
+    {
+      id: 34,
+      phase: 4,
+      phaseLabel: "Phase 4 (Years 7-8)",
+      text: "A map uses a scale of 1 : 50,000. If a road is 6 cm on the map, what is its actual length in kilometres?",
+      diagram: "",
+      options: ["30 km", "3 km", "0.3 km", "300 km"],
+      correct: 1, // 3 km (Option B)
+      strategy: "Strategy: Multiply map length by scale (6 cm × 50,000 = 300,000 cm). Convert cm to m (÷ 100), then m to km (÷ 1,000)."
+    },
+    {
+      id: 35,
+      phase: 4,
+      phaseLabel: "Phase 4 (Years 7-8)",
+      text: "Angles in a 4-sided quadrilateral total 360°. Three angles are 90°, 100°, and 80°. Find missing angle x.",
+      diagram: "",
+      options: ["80°", "100°", "90°", "110°"],
+      correct: 2, // 90° (Option C)
+      strategy: "Strategy: Subtract the sum of the three known angles from 360°: 360° - (90° + 100° + 80°)."
+    },
+
+    // PHASE 5 (5 Mathematics Questions: Q36 - Q40)
+    {
+      id: 36,
+      phase: 5,
+      phaseLabel: "Phase 5 (Years 9-10)",
+      text: "Solve the linear equation for x: 4x - 5 = 15",
+      diagram: "",
+      options: ["x = 4", "x = 6", "x = 10", "x = 5"],
+      correct: 3, // x = 5 (Option D)
+      strategy: "Strategy: Use inverse operations to isolate x: add 5 to both sides (4x = 20), then divide both sides by 4."
+    },
+    {
+      id: 37,
+      phase: 5,
+      phaseLabel: "Phase 5 (Years 9-10)",
+      text: "Find the gradient (m) of a line passing through coordinate points (1, 3) and (5, 11).",
+      diagram: `<svg width="120" height="90" viewBox="0 0 120 90">
+        <line x1="20" y1="80" x2="100" y2="80" stroke="#000"/>
+        <line x1="20" y1="80" x2="20" y2="10" stroke="#000"/>
+        <line x1="20" y1="65" x2="80" y2="20" stroke="#2563EB" stroke-width="3"/>
+      </svg>`,
+      options: ["m = 2", "m = 4", "m = 8", "m = 0.5"],
+      correct: 0, // m = 2 (Option A)
+      strategy: "Strategy: Apply gradient formula m = (y2 - y1) / (x2 - x1) = (11 - 3) / (5 - 1)."
+    },
+    {
+      id: 38,
+      phase: 5,
+      phaseLabel: "Phase 5 (Years 9-10)",
+      text: "In a right-angled triangle, the two shorter legs measure 6 cm and 8 cm. Calculate hypotenuse c.",
+      diagram: `<svg width="100" height="80" viewBox="0 0 100 80">
+        <polygon points="20,70 80,70 20,20" fill="#E0F2FE" stroke="#0284C7" stroke-width="2"/>
+        <text x="50" y="78" font-size="10">8 cm</text>
+        <text x="8" y="50" font-size="10">6 cm</text>
+        <text x="55" y="40" font-size="10">c</text>
+      </svg>`,
+      options: ["14 cm", "10 cm", "100 cm", "12 cm"],
+      correct: 1, // 10 cm (Option B)
+      strategy: "Strategy: Apply Pythagoras' Theorem: c² = a² + b² -> c² = 6² + 8² = 36 + 64 = 100. Calculate square root of 100."
+    },
+    {
+      id: 39,
+      phase: 5,
+      phaseLabel: "Phase 5 (Years 9-10)",
+      text: "Expand and simplify quadratic expression: (x + 2)(x + 4)",
+      diagram: "",
+      options: ["x² + 8x + 6", "x² + 8", "x² + 6x + 8", "x² + 6"],
+      correct: 2, // x² + 6x + 8 (Option C)
+      strategy: "Strategy: Apply FOIL method: multiply First terms (x²), Outer terms (4x), Inner terms (2x), and Last terms (8), then simplify."
+    },
+    {
+      id: 40,
+      phase: 5,
+      phaseLabel: "Phase 5 (Years 9-10)",
+      text: "Simplify using index laws: (3y²)³",
+      diagram: "",
+      options: ["9y⁶", "9y⁵", "27y⁵", "27y⁶"],
+      correct: 3, // 27y⁶ (Option D)
+      strategy: "Strategy: Cube the coefficient (3³ = 27) and multiply exponents (y^(2×3) = y⁶)."
+    }
+  ];
+
+  function startTest() {
+    const name = document.getElementById("student-name").value.trim();
+    const year = document.getElementById("student-year").value;
+    if (!name || !year) {
+      alert("Please enter your full name and select your year group.");
+      return;
+    }
+    studentInfo.name = name;
+    studentInfo.year = year;
+
+    document.getElementById("registration-page").classList.remove("active");
+    document.getElementById("test-page").classList.add("active");
+    loadQuestion(0);
+  }
+
+  function loadQuestion(index) {
+    currentQuestionIndex = index;
+    const q = questions[index];
+
+    document.getElementById("question-header").innerText = `Question ${index + 1} of 40`;
+    document.getElementById("phase-tag").innerText = q.phaseLabel;
+    document.getElementById("question-text").innerText = q.text;
+    document.getElementById("diagram-area").innerHTML = q.diagram || "";
+    document.getElementById("solution-box").style.display = "none";
+    document.getElementById("solution-text").innerText = q.strategy;
+
+    // Progress bar calculations
+    const percent = ((index + 1) / questions.length) * 100;
+    document.getElementById("progress-fill").style.width = percent + "%";
+
+    // Options rendering
+    const optionsArea = document.getElementById("options-area");
+    optionsArea.innerHTML = "";
+    
+    q.options.forEach((optText, optIdx) => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      if (studentAnswers[q.id] === optIdx) {
+        btn.classList.add("selected");
+      }
+      btn.innerText = `${String.fromCharCode(65 + optIdx)}. ${optText}`;
+      btn.onclick = () => selectOption(q.id, optIdx);
+      optionsArea.appendChild(btn);
+    });
+
+    // Disable Next button until student selects an answer
+    const nextBtn = document.getElementById("next-btn");
+    nextBtn.disabled = (studentAnswers[q.id] === undefined);
+    nextBtn.innerText = (index === questions.length - 1) ? "Submit Assessment" : "Next Question";
+  }
+
+  function selectOption(questionId, optionIndex) {
+    studentAnswers[questionId] = optionIndex;
+    loadQuestion(currentQuestionIndex);
+  }
+
+  function toggleSolution() {
+    const box = document.getElementById("solution-box");
+    box.style.display = (box.style.display === "block") ? "none" : "block";
+  }
+
+  function nextQuestion() {
+    if (studentAnswers[questions[currentQuestionIndex].id] === undefined) {
+      alert("Please select an answer before moving to the next question.");
+      return;
+    }
+    if (currentQuestionIndex < questions.length - 1) {
+      loadQuestion(currentQuestionIndex + 1);
+    } else {
+      finishTest();
+    }
+  }
+
+  function finishTest() {
+    let totalScore = 0;
+    let p2Score = 0, p3Score = 0, p4Score = 0, p5Score = 0;
+
+    questions.forEach(q => {
+      const selected = studentAnswers[q.id];
+      if (selected === q.correct) {
+        totalScore++;
+        if (q.phase === 2) p2Score++;
+        if (q.phase === 3) p3Score++;
+        if (q.phase === 4) p4Score++;
+        if (q.phase === 5) p5Score++;
+      }
+    });
+
+    const percentage = Math.round((totalScore / 40) * 100);
+
+    // Curriculum Placement Diagnostic Analysis focused on Phase 3 Standing
+    let evaluatedPhase = "";
+    let summaryText = "";
+
+    if (p3Score <= 10) {
+      evaluatedPhase = "Working Towards Phase 3 Mathematics";
+      summaryText = `Student scored ${p3Score}/23 on Phase 3 items. Currently consolidating Phase 2 foundations and working towards key Phase 3 concepts in fractions, decimals, perimeter/area, and order of operations.`;
+    } else if (p3Score <= 17) {
+      evaluatedPhase = "Solid Phase 3 Mathematics Learner";
+      summaryText = `Student scored ${p3Score}/23 on Phase 3 items. Secure in Phase 2 skills and demonstrating solid competence across core Phase 3 learning outcomes. Ready for targeted extension into ratio and algebraic patterns.`;
+    } else if (p4Score <= 3) {
+      evaluatedPhase = "Phase 3 Mastery (Transitioning to Phase 4)";
+      summaryText = `Student achieved high mastery in Phase 3 (${p3Score}/23) and is actively working on Phase 4 (Years 7-8) targets in ratio, map scales, and algebraic simplification.`;
+    } else {
+      evaluatedPhase = "Phase 4 / Phase 5 Advanced Mathematics Learner";
+      summaryText = `Student demonstrated advanced mathematical proficiency across Phase 3 (${p3Score}/23), Phase 4 (${p4Score}/5), and Phase 5 (${p5Score}/5) problem solving.`;
+    }
+
+    document.getElementById("test-page").classList.remove("active");
+    document.getElementById("results-page").classList.add("active");
+
+    document.getElementById("result-student-name").innerText = `Student: ${studentInfo.name}`;
+    document.getElementById("result-year-group").innerText = `Year Group: ${studentInfo.year}`;
+    document.getElementById("result-score").innerText = `${totalScore} / 40`;
+    document.getElementById("result-percent").innerText = `${percentage}%`;
+    document.getElementById("result-phase-level").innerText = evaluatedPhase;
+    document.getElementById("result-summary-text").innerText = summaryText;
+
+    document.getElementById("score-p2").innerText = `${p2Score} / 7`;
+    document.getElementById("score-p3").innerText = `${p3Score} / 23`;
+    document.getElementById("score-p4").innerText = `${p4Score} / 5`;
+    document.getElementById("score-p5").innerText = `${p5Score} / 5`;
+
+    // Send payload to Google Sheets backend
+    const payload = {
+      studentName: studentInfo.name,
+      yearGroup: studentInfo.year,
+      totalScore: totalScore,
+      percentage: percentage,
+      curriculumPhase: evaluatedPhase,
+      phase2Score: `${p2Score}/7`,
+      phase3Score: `${p3Score}/23`,
+      phase4Score: `${p4Score}/5`,
+      phase5Score: `${p5Score}/5`,
+      answers: studentAnswers
+    };
+
+    document.getElementById("submission-status").innerText = "Recording submission to teacher Google Sheet backend...";
+    
+    fetch(GOOGLE_WEB_APP_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      document.getElementById("submission-status").innerText = "✓ Results successfully saved to your Google Sheet database!";
+    })
+    .catch(err => {
+      document.getElementById("submission-status").innerText = "⚠ Results calculated locally. (Database sync failed)";
+    });
+  }
+</script>
+</body>
+</html>
